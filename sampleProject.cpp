@@ -9,6 +9,7 @@ using namespace std;
 void addStudent();
 void showStudents();
 int getNextStudentId();
+void oneStudent();
 
 struct info
 {
@@ -22,12 +23,11 @@ struct info
 
 int main()
 {
-    showStudents();
-   
+    
+    oneStudent();
 
     return 0;
 }
-
 
 void addStudent()
 {
@@ -75,7 +75,7 @@ void addStudent()
         }
 
         // 5 --> 4, 1
-        data << s1.id << "," <<s1.rollNo << "," << s1.name << "," << s1.phone << "," << s1.address << ",";
+        data << s1.id << "," << s1.rollNo << "," << s1.name << "," << s1.phone << "," << s1.address << ",";
         for (int i = 0; i < s1.courses.size(); i++)
         {
             if (i < (s1.courses.size() - 1))
@@ -157,8 +157,9 @@ void showStudents()
             s1.courses.push_back(course);
         }
 
-        cout << endl << "Student ID is : " << s1.id << endl;
-        cout  << "Student Roll no is : " << s1.rollNo << endl;
+        cout << endl
+             << "Student ID is : " << s1.id << endl;
+        cout << "Student Roll no is : " << s1.rollNo << endl;
         cout << "Student name is : " << s1.name << endl;
         cout << "Student Phone is : " << s1.phone << endl;
         cout << "Student Address is : " << s1.address << endl;
@@ -171,5 +172,68 @@ void showStudents()
     }
 
     cout << "\n No more students.\n";
+    data.close();
+}
+
+void oneStudent()
+{
+    bool found= false;
+    string name, rollNo;
+    cout << "Enter student name: ";
+    getline(cin, name);
+
+    cout << "Enter student roll No: ";
+    getline(cin, rollNo);
+
+    ifstream data("studentInfo.csv");
+    string line;
+    getline(data, line);
+
+    while (getline(data, line))
+    {
+        stringstream ss(line);
+        info s1;
+        
+
+        string idStr;
+        getline(ss, idStr, ',');
+        s1.id = stoi(idStr);
+        getline(ss, s1.rollNo, ',');
+        getline(ss, s1.name, ',');
+        getline(ss, s1.phone, ',');
+        getline(ss, s1.address, ',');
+
+        string coursesField;
+        getline(ss, coursesField, ','); // all courses in one cell
+
+        stringstream cs(coursesField);
+        string course;
+        while (getline(cs, course, ';')) // Hajra Ishfaq // 25021519-123
+        {
+            s1.courses.push_back(course);
+        }
+
+        if ((s1.rollNo==rollNo) && (s1.name== name))
+        {
+            found= true;
+            cout<< endl<< "Student Found"<< endl;
+            cout << endl
+                 << "Student ID is : " << s1.id << endl;
+            cout << "Student Roll no is : " << s1.rollNo << endl;
+            cout << "Student name is : " << s1.name << endl;
+            cout << "Student Phone is : " << s1.phone << endl;
+            cout << "Student Address is : " << s1.address << endl;
+            cout << "Student Courses are : ";
+            for (int i = 0; i < s1.courses.size(); ++i)
+            {
+                cout << s1.courses[i] << " ";
+            }
+            cout << endl;
+        }
+    }
+    if(found== false)
+    {
+        cout<< endl<< "Student doesn't exists." ;
+    }
     data.close();
 }
